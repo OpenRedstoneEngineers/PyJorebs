@@ -7,14 +7,14 @@ from datetime import datetime
 
 import rcon
 
-from config import SERVERS, DESTINATION, RCON_PASS
+from config import SERVERS, DESTINATION, RCON_PASS, SERVERS_LOCATION
 
 _LOGGER = logging.getLogger()
 
 
 @contextmanager
 def save_off(server):
-    with rcon.Client('localhost', SERVERS[server]["rcon"], passwd=RCON_PASS) as client:
+    with rcon.Client('localhost', server["rcon"], passwd=RCON_PASS) as client:
         client.run('save-off')
         client.run('save-all')
         time.sleep(2)
@@ -43,34 +43,39 @@ def simple(server):
     with save_off(server):
         worlds = [
             child
-            for child in SERVERS[server]["location"].iterdir()
+            for child in server["location"].iterdir()
             if child.is_dir() and is_world(child)
         ]
         for world in worlds:
-            source = SERVERS[server]["location"] / world.name
+            source = server["location"] / world.name
             name = f"{world.name}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
-            destination = DESTINATION / server / "simple" / name
+            destination = DESTINATION / server["name"] / "simple" / name
             make_tar(source, destination)
 
 
 def full(server):
     with save_off(server):
-        source = SERVERS[server]["location"]
-        destination = DESTINATION / server / "full" / datetime.now().strftime('%Y%m%d%H%M%S')
+        source = server["location"]
+        destination = DESTINATION / server["name"] / "full" / datetime.now().strftime('%Y%m%d%H%M%S')
         make_tar(source, destination)
 
 
 def do_stuff(args):
-    types = {
-        "full": full,
-        "simple": simple
-    }
     try:
-        for server in args.servers:
-            types[args.type](server)
+        backup = {
+            "full": full,
+            "simple": simple
+        }[args.type]
     except KeyError:
         _LOGGER.fatal(f"Invalid backup type {args.type}")
-        exit()
+        return
+
+    for server in args.servers:
+        backup({
+            **SERVERS[server],
+            "name": server,
+            "location": SERVERS_LOCATION / server
+        })
 
 
 def main():

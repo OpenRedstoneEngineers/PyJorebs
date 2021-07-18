@@ -35,6 +35,7 @@ def is_server(server) -> bool:
 
 
 def make_tar(source, output):
+    output.parent.mkdir(parents=True, exist_ok=True)
     with tarfile.open(output.with_suffix(".tar.gz"), "w:gz") as tar:
         tar.add(source, arcname=source.name)
 

@@ -30,10 +30,6 @@ def is_world(path) -> bool:
     )
 
 
-def is_server(server) -> bool:
-    return server in SERVERS
-
-
 def make_tar(source, output):
     output.parent.mkdir(parents=True, exist_ok=True)
     with tarfile.open(output.with_suffix(".tar.gz"), "w:gz") as tar:
@@ -61,39 +57,32 @@ def full(server):
         make_tar(source, destination)
 
 
-def do_stuff(args):
-    try:
-        backup = {
-            "full": full,
-            "simple": simple
-        }[args.type]
-    except KeyError:
-        _LOGGER.fatal(f"Invalid backup type {args.type}")
-        return
-
-    for server in args.servers:
-        backup({
-            **SERVERS[server],
-            "name": server,
-            "location": SERVERS_LOCATION / server
-        })
+backup_types = {
+    "full": full,
+    "simple": simple,
+}
 
 
 def main():
     parser = argparse.ArgumentParser("BackOREp")
     parser.add_argument("-v", "--verbose", nargs="?", const=True)
     required_args = parser.add_argument_group("required arguments")
-    required_args.add_argument("-s", "--servers", help="The server name to backup.", nargs="+", required=True)
-    required_args.add_argument("-t", "--type", help="Type of backup to run (full, simple).", required=True)
+    required_args.add_argument(
+        "-s", "--servers", help="The server name to backup.", nargs="+", choices=SERVERS,
+        required=True)
+    required_args.add_argument("-t", "--type", help=f"Type of backup to run.", choices=backup_types, required=True)
     args = parser.parse_args()
     if args.verbose:
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.DEBUG)
         _LOGGER.addHandler(console_handler)
-    if any(not is_server(serv) for serv in args.servers):
-        _LOGGER.fatal("Invalid server(s) provided!")
-        exit()
-    do_stuff(args)
+
+    for server in args.servers:
+        backup_types[args.type]({
+            **SERVERS[server],
+            "name": server,
+            "location": SERVERS_LOCATION / server
+        })
 
 
 if __name__ == "__main__":

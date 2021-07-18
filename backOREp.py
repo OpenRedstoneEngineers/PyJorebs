@@ -82,7 +82,7 @@ def main():
     parser = argparse.ArgumentParser("BackOREp")
     parser.add_argument("-v", "--verbose", nargs="?", const=True)
     required_args = parser.add_argument_group("required arguments")
-    required_args.add_argument("-s", "--servers", help="The server name to backup.", required=True)
+    required_args.add_argument("-s", "--servers", help="The server name to backup.", nargs="+", required=True)
     required_args.add_argument("-t", "--type", help="Type of backup to run (full, simple).", required=True)
     args = parser.parse_args()
     if args.verbose:

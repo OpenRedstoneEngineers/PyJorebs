@@ -1,5 +1,6 @@
 import argparse
 import logging
+import sys
 import tarfile
 import time
 from contextlib import contextmanager
@@ -9,18 +10,22 @@ import rcon
 
 from config import SERVERS, DESTINATION, RCON_PASS, SERVERS_LOCATION
 
-_LOGGER = logging.getLogger()
+_NAME = "BackOREp"
+_LOGGER = logging.getLogger(_NAME)
+_LOGGER.setLevel(logging.DEBUG)
 
 
 @contextmanager
 def save_off(server):
     with rcon.Client('localhost', server["rcon"], passwd=RCON_PASS) as client:
+        _LOGGER.debug(f"Running 'save-off', 'save-all' for {server['name']}")
         client.run('save-off')
         client.run('save-all')
         time.sleep(2)
         try:
             yield
         finally:
+            _LOGGER.debug(f"Running 'save-on' for {server['name']}")
             client.run('save-on')
 
 
@@ -32,17 +37,21 @@ def is_world(path) -> bool:
 
 def make_tar(source, output):
     output.parent.mkdir(parents=True, exist_ok=True)
-    with tarfile.open(output.with_suffix(".tar.gz"), "w:gz") as tar:
+    destination = output.with_suffix(".tar.gz")
+    _LOGGER.debug(f"Generating tar {destination} from {source}")
+    with tarfile.open(destination, "w:gz") as tar:
         tar.add(source, arcname=source.name)
 
 
 def simple(server):
+    _LOGGER.debug(f"Performing simple backup of server {server['name']}")
     with save_off(server):
         worlds = [
             child
             for child in server["location"].iterdir()
             if child.is_dir() and is_world(child)
         ]
+        _LOGGER.debug(f"Found worlds {worlds}")
         for world in worlds:
             source = server["location"] / world.name
             name = f"{world.name}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
@@ -51,20 +60,19 @@ def simple(server):
 
 
 def full(server):
+    _LOGGER.debug(f"Performing full backup of server {server['name']}")
     with save_off(server):
         source = server["location"]
         destination = DESTINATION / server["name"] / "full" / datetime.now().strftime('%Y%m%d%H%M%S')
         make_tar(source, destination)
 
 
-backup_types = {
-    "full": full,
-    "simple": simple,
-}
-
-
 def main():
-    parser = argparse.ArgumentParser("BackOREp")
+    backup_types = {
+        "full": full,
+        "simple": simple,
+    }
+    parser = argparse.ArgumentParser(_NAME)
     parser.add_argument("-v", "--verbose", nargs="?", const=True)
     required_args = parser.add_argument_group("required arguments")
     required_args.add_argument(
@@ -73,8 +81,9 @@ def main():
     required_args.add_argument("-t", "--type", help=f"Type of backup to run.", choices=backup_types, required=True)
     args = parser.parse_args()
     if args.verbose:
-        console_handler = logging.StreamHandler()
+        console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(logging.DEBUG)
+        console_handler.setFormatter(logging.Formatter('[%(asctime)s] %(name)s - %(levelname)s: %(message)s'))
         _LOGGER.addHandler(console_handler)
 
     for server in args.servers:

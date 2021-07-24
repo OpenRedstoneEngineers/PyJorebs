@@ -17,16 +17,20 @@ _LOGGER.setLevel(logging.DEBUG)
 
 @contextmanager
 def save_off(server):
-    with rcon.Client('localhost', server["rcon"], passwd=RCON_PASS) as client:
-        _LOGGER.debug(f"Running 'save-off', 'save-all' for {server['name']}")
-        client.run('save-off')
-        client.run('save-all')
-        time.sleep(2)
-        try:
-            yield
-        finally:
-            _LOGGER.debug(f"Running 'save-on' for {server['name']}")
-            client.run('save-on')
+    try:
+        with rcon.Client('localhost', server["rcon"], passwd=RCON_PASS) as client:
+            _LOGGER.debug(f"Running 'save-off', 'save-all' for {server['name']}")
+            client.run('save-off')
+            client.run('save-all')
+            time.sleep(2)
+            try:
+                yield
+            finally:
+                _LOGGER.debug(f"Running 'save-on' for {server['name']}")
+                client.run('save-on')
+    except ConnectionError:
+        _LOGGER.warning(f"Unable to connect to rcon for {server['name']}, continuing to save")
+        yield
 
 
 def is_world(path) -> bool:

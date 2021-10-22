@@ -1,7 +1,7 @@
 [Unit]
 Description=%i Minecraft server
-Requires=network.target local-fs.target
-After=network.target local-fs.target
+# Requires=network.target local-fs.target
+# After=network.target local-fs.target
 RequiresMountsFor=/var/run/container/storage
 
 [Service]
@@ -10,14 +10,14 @@ TimeoutStartSec=1
 
 ExecStartPre=/bin/rm -f %t/%n-pid %t/%n-cid
 ExecStart=/home/mcadmin/scripts/PyJorebs/launch.py %i %n %t
-ExecStop=/usr/local/bin/podman stop --ignore --cidfile %t/%n-cid -t 10
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/%n-cid -t 10
 PIDFile=%t/%n-pid
 
 KillMode=none
 Restart=always
 RestartSec=5
 Type=forking
-User=mcadmin
+# User=mcadmin
 
 [Install]
 WantedBy=default.target

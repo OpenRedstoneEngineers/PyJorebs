@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import sys
+import subprocess
 
 image_name = "docker.io/library/openjdk:16.0.1-slim"
 
@@ -15,9 +16,9 @@ def main(server, unit_name, runtime_dir):
         [f"/store/tiles/{server}", "/data/plugins/dynmap/web/tiles"],
     )
     # java opts?
-    paper_start_command = ["sh", "-c", '"cd /data && exec java -jar /common/paper.jar"']
+    paper_start_command = ["sh", "-c", "cd /data && exec java -jar /common/paper.jar"]
     podman_command = [
-        "podman", "run",
+        "/usr/bin/podman", "run",
         "--conmon-pidfile", f"{runtime_dir}/{unit_name}-pid",
         "--cidfile", f"{runtime_dir}/{unit_name}-cid",
         "--cgroups", "no-conmon",
@@ -28,7 +29,7 @@ def main(server, unit_name, runtime_dir):
         image_name,
         *paper_start_command,
     ]
-    print(" ".join(podman_command))
+    subprocess.run(podman_command, stdout=sys.stdout, stderr=sys.stderr)
     
 if __name__ == "__main__":
     main(*sys.argv[1:])

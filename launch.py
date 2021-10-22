@@ -31,4 +31,4 @@ def main(server, unit_name, runtime_dir):
     print(" ".join(podman_command))
     
 if __name__ == "__main__":
-    main(*sys.arvg[1:])
+    main(*sys.argv[1:])

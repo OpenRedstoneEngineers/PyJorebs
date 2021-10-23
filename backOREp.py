@@ -19,7 +19,7 @@ _LOGGER.setLevel(logging.DEBUG)
 @contextmanager
 def save_off(server):
     try:
-        with rcon.Client('localhost', server["rcon"], passwd=RCON_PASS) as client:
+        with rcon.Client('localhost', server["ports"]["rcon"], passwd=RCON_PASS) as client:
             _LOGGER.debug(f"Running 'save-off', 'save-all' for {server['name']}")
             client.run('save-off')
             client.run('save-all')

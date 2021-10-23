@@ -1,7 +1,5 @@
 [Unit]
-Description=%i Minecraft server
-# Requires=network.target local-fs.target
-# After=network.target local-fs.target
+Description=%i Minecraft
 RequiresMountsFor=/var/run/container/storage
 
 [Service]
@@ -9,7 +7,7 @@ Environment=PODMAN_SYSTEMD_UNIT=%n
 TimeoutStartSec=1
 
 ExecStartPre=/bin/rm -f %t/%n-pid %t/%n-cid
-ExecStart=/home/mcadmin/scripts/PyJorebs/launch.py %i %n %t
+ExecStart=/home/mcadmin/scripts/PyJorebs/lOREnch.py %i %n %t
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/%n-cid -t 10
 PIDFile=%t/%n-pid
 
@@ -17,7 +15,6 @@ KillMode=none
 Restart=always
 RestartSec=5
 Type=forking
-# User=mcadmin
 
 [Install]
 WantedBy=default.target

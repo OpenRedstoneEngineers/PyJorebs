@@ -6,7 +6,7 @@ RequiresMountsFor=/var/run/container/storage
 Environment=PODMAN_SYSTEMD_UNIT=%n
 TimeoutStartSec=1
 
-ExecStartPre=/usr/bin/podman rm --ignore -f --cidfile %t/%n-cid
+ExecStartPre=-/usr/bin/podman rm --ignore -f --cidfile %t/%n-cid
 ExecStartPre=/bin/rm -f %t/%n-pid %t/%n-cid
 ExecStart=/home/mcadmin/scripts/PyJorebs/lOREnch.py %i %n %t
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/%n-cid -t 10

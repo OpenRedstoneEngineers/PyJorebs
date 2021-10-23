@@ -35,6 +35,7 @@ def main(server, unit_name, runtime_dir, dry_run=False):
         "--cidfile", f"{runtime_dir}/{unit_name}-cid",
         "--cgroups", "no-conmon",
         "--name", f"mc-{server}",
+        "--net", "slirp4netns:allow_host_loopback=true",
         *mounts,
         *publications,
         "--rm", "-dit",

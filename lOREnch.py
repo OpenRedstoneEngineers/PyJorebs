@@ -35,7 +35,6 @@ def main(server, unit_name, runtime_dir, dry_run=False):
         "--cidfile", f"{runtime_dir}/{unit_name}-cid",
         "--cgroups", "no-conmon",
         "--name", f"mc-{server}",
-        "--pod", "prod-network",
         *mounts,
         *publications,
         "--rm", "-dit",

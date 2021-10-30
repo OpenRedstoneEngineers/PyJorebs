@@ -18,10 +18,11 @@ def ports_to_args(ports, public):
         yield f"{ip}:{port}:{port}"
 
 
-def main(server, unit_name, runtime_dir, dry_run=False):
+# TODO: create a propORE argument parsORE (or something)
+def main(server, unit_name, runtime_dir, extra_args="", dry_run=False):
     server_config = SERVERS[server]
     # so tihs is weird XD
-    replacements = {**server_config["extra"], "server": server}
+    replacements = {**server_config["extra"], "server": server, "extra_args": extra_args}
     mounts = mounts_to_args(server_config["mounts"], replacements)
     publications = ports_to_args(server_config["ports"], server_config["public"])
     def get(x):

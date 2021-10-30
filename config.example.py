@@ -14,8 +14,8 @@ dynmap_mount = ("/store/tiles/{server}", "/data/plugins/dynmap/web/tiles")
 
 
 memory_opts = "-Xms{memory} -Xmx{memory}"
-paper_command = f"cd /data && exec java {memory_opts} -jar /common/paper.jar"
-waterfall_command = f"cd /data && exec java {memory_opts} -jar /common/waterfall.jar"
+paper_command = f"cd /data && exec java {memory_opts} -jar /common/paper.jar" + " {extra_args}"
+waterfall_command = f"cd /data && exec java {memory_opts} -jar /common/waterfall.jar" + " {extra_args}"
 
 
 SERVERS = {

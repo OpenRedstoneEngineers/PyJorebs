@@ -35,7 +35,7 @@ def main(server, unit_name, runtime_dir, extra_args="", dry_run=False):
         "--conmon-pidfile", f"{runtime_dir}/{unit_name}-pid",
         "--cgroups", "no-conmon",
         "--name", f"mc-{server}",
-        "--net", "slirp4netns:allow_host_loopback=true",
+        "--net", "slirp4netns:allow_host_loopback=true,port_handler=slirp4netns",
         *mounts,
         *publications,
         "--rm", "-dit",

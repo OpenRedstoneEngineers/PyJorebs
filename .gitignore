@@ -1,5 +1,5 @@
 venv/
-config.py
+secrets.py
 .idea/
 __pycache__/
 

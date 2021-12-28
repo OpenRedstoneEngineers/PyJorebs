@@ -7,7 +7,7 @@ from typing import List
 
 import rcon
 
-from config import SERVERS, RCON_PASS
+from config import SERVERS, secrets
 
 _NAME = "rcOREn"
 _LOGGER = logging.getLogger(_NAME)
@@ -16,7 +16,7 @@ _LOGGER.setLevel(logging.DEBUG)
 
 def run(rcon_ports: List[int], command: str):
     for port in rcon_ports:
-        with rcon.Client('localhost', port, passwd=RCON_PASS) as client:
+        with rcon.Client('localhost', port, passwd=secrets.RCON_PASS) as client:
             _LOGGER.info(f"Port '{port}': running '{command}'")
             response = re.sub(r"""§[0-9a-flmno]""", "", client.run(command))
             _LOGGER.info(f"Response:\n{response}")
@@ -27,7 +27,7 @@ def main():
     parser.add_argument("-v", "--verbose", nargs="?", const=True)
     required_args = parser.add_argument_group("required arguments")
     required_args.add_argument(
-        "-s", "--servers", help="The server name to backup.", nargs="+", choices=SERVERS,
+        "-s", "--servers", help="The server name to run command on.", nargs="+", choices=SERVERS,
         required=True)
     required_args.add_argument("-c", "--command", help=f"The command to run.", nargs="+", required=True)
     args = parser.parse_args()

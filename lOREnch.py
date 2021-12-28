@@ -2,7 +2,7 @@
 import sys
 import subprocess
 
-from config import SERVERS, PODMAN_IMAGE_NAME
+from config import SERVERS
 
 
 def mounts_to_args(mounts, replacements):
@@ -39,7 +39,7 @@ def main(server, unit_name, runtime_dir, extra_args="", dry_run=False):
         *mounts,
         *publications,
         "--rm", "-dit",
-        PODMAN_IMAGE_NAME,
+        server_config["image"],
         "sh", "-c",
         run_command,
     ]

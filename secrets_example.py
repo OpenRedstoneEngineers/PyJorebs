@@ -1,0 +1,1 @@
+RCON_PASS = "passwOREd"

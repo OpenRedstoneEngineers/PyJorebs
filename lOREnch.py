@@ -2,7 +2,7 @@
 import sys
 import subprocess
 
-from config import SERVERS
+from config import SERVICES
 
 
 def mounts_to_args(mounts, replacements):
@@ -22,17 +22,17 @@ def ports_to_args(ports, public):
 
 
 # TODO: create a propORE argument parsORE (or something)
-# TODO: server -> service?
-def main(server, unit_name, runtime_dir, extra_args="", dry_run=False):
-    server_config = SERVERS[server]
+def main(service, unit_name, runtime_dir, extra_args="", dry_run=False):
+    service_config = SERVICES[service]
     # so tihs is weird XD
-    replacements = {**server_config["extra"], "server": server, "extra_args": extra_args}
-    mounts = mounts_to_args(server_config["mounts"], replacements)
-    publications = ports_to_args(server_config["ports"], server_config["public"])
+    # TODO: server -> service
+    replacements = {**service_config["extra"], "server": service, "extra_args": extra_args}
+    mounts = mounts_to_args(service_config["mounts"], replacements)
+    publications = ports_to_args(service_config["ports"], service_config["public"])
     def get(x):
-        if x not in server_config:
+        if x not in service_config:
             return None
-        return server_config[x].format(**replacements)
+        return service_config[x].format(**replacements)
 
     run_command = get("run_command")
     command_parts = [] if run_command is None else ["sh", "-c", run_command]
@@ -41,12 +41,12 @@ def main(server, unit_name, runtime_dir, extra_args="", dry_run=False):
         "/usr/bin/podman", "run",
         "--conmon-pidfile", f"{runtime_dir}/{unit_name}-pid",
         "--cgroups", "no-conmon",
-        "--name", server,
+        "--name", service,
         "--net", "slirp4netns:allow_host_loopback=true,port_handler=slirp4netns",
         *mounts,
         *publications,
         "--rm", "-dit",
-        server_config["image"],
+        service_config["image"],
         *command_parts,
     ]
     if dry_run:

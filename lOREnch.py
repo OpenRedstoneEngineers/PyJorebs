@@ -13,7 +13,7 @@ def mounts_to_args(mounts, replacements):
 
 def ports_to_args(ports, public):
     for name, port in ports.items():
-        if not isinstance(tuple, port):
+        if not isinstance(port, tuple):
             port = port, port
         host_port, container_port = port
         ip = "0.0.0.0" if name in public else "127.0.0.1"

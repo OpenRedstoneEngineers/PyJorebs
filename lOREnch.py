@@ -13,12 +13,16 @@ def mounts_to_args(mounts, replacements):
 
 def ports_to_args(ports, public):
     for name, port in ports.items():
+        if not isinstance(tuple, port):
+            port = port, port
+        host_port, container_port = port
         ip = "0.0.0.0" if name in public else "127.0.0.1"
         yield "-p"
-        yield f"{ip}:{port}:{port}"
+        yield f"{ip}:{host_port}:{container_port}"
 
 
 # TODO: create a propORE argument parsORE (or something)
+# TODO: server -> service?
 def main(server, unit_name, runtime_dir, extra_args="", dry_run=False):
     server_config = SERVERS[server]
     # so tihs is weird XD
@@ -26,22 +30,24 @@ def main(server, unit_name, runtime_dir, extra_args="", dry_run=False):
     mounts = mounts_to_args(server_config["mounts"], replacements)
     publications = ports_to_args(server_config["ports"], server_config["public"])
     def get(x):
+        if x not in server_config:
+            return None
         return server_config[x].format(**replacements)
 
     run_command = get("run_command")
+    command_parts = [] if run_command is None else ["sh", "-c", run_command]
 
     podman_command = [
         "/usr/bin/podman", "run",
         "--conmon-pidfile", f"{runtime_dir}/{unit_name}-pid",
         "--cgroups", "no-conmon",
-        "--name", f"mc-{server}",
+        "--name", server,
         "--net", "slirp4netns:allow_host_loopback=true,port_handler=slirp4netns",
         *mounts,
         *publications,
         "--rm", "-dit",
         server_config["image"],
-        "sh", "-c",
-        run_command,
+        *command_parts,
     ]
     if dry_run:
         print(" ".join(podman_command))

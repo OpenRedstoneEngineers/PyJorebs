@@ -1,16 +1,16 @@
 [Unit]
-Description=%i Minecraft
+Description=%i
 RequiresMountsFor=/var/run/container/storage
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
 TimeoutStartSec=1
 
-ExecStartPre=-/usr/bin/podman stop mc-%i
-ExecStartPre=-/usr/bin/podman rm --ignore -f mc-%i
+ExecStartPre=-/usr/bin/podman stop %i
+ExecStartPre=-/usr/bin/podman rm --ignore -f %i
 ExecStartPre=-/bin/rm -f %t/%n-pid
 ExecStart=/home/mcadmin/scripts/PyJorebs/lOREnch.py %i %n %t
-ExecStop=/usr/bin/podman stop --ignore mc-%i -t 10
+ExecStop=/usr/bin/podman stop --ignore %i -t 10
 PIDFile=%t/%n-pid
 
 KillMode=none

@@ -6,6 +6,10 @@ except ImportError:
     import secrets_example as secrets
 
 from pathlib import Path
+from mergedeep import Strategy, merge as do_merge
+
+def merge(*args, **kwargs):
+    return do_merge(*args, strategy=Strategy.ADDITIVE, **kwargs)
 
 
 schemati_mount = ("/home/mcadmin/actual_schematics", "/schematics")
@@ -22,101 +26,39 @@ paper_command = f"cd /data && exec java {memory_opts} -jar /common/paper-1.17.1-
 waterfall_command = f"cd /data && exec java --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/sun.net.www.protocol.https=ALL-UNNAMED {memory_opts} -jar /common/waterfall-1.18-466.jar" + " {extra_args}"
 podman_jdk_image = "docker.io/library/openjdk:16.0.2-slim"
 
+def paper_server(index, memory):
+    return {
+        "ports": {
+            "game": 30000 + index,
+            "rcon": 30100 + index,
+        },
+        "public": {},
+        "extra": {
+            "memory": memory,
+        },
+        "image": podman_jdk_image,
+        "run_command": paper_command,
+        "mounts": [*common_mounts],
+    }
 
 SERVERS = {
-    "hub": {
-        "ports": {
-            "game": 30000,
-            "rcon": 30100,
+    "hub": paper_server(index=0, memory="2G"),
+    "build": merge(
+        paper_server(index=1, memory="8G"),
+        {
+            "ports": {
+                "dynmap": 30201,
+                "schemati": 8080,
+            },
+            "public": {"dynmap"},
+            "mounts": [dynmap_mount],
         },
-        "public": {},
-        "extra": {
-            "memory": "2G",
-        },
-        "image": podman_jdk_image,
-        "run_command": paper_command,
-        "mounts": [*common_mounts],
-    },
-    "build": {
-        "ports": {
-            "game": 30001,
-            "rcon": 30101,
-            "dynmap": 30201,
-            "schemati": 8080,
-        },
-        "public": {"dynmap"},
-        "extra": {
-            "memory": "8G",
-        },
-        "image": podman_jdk_image,
-        "run_command": paper_command,
-        "mounts": [*common_mounts, dynmap_mount],
-    },
-    "school": {
-        "ports": {
-            "game": 30002,
-            "rcon": 30102,
-        },
-        "public": {},
-        "extra": {
-            "memory": "4G",
-        },
-        "image": podman_jdk_image,
-        "run_command": paper_command,
-        "mounts": [*common_mounts],
-    },
-    "survival": {
-        "ports": {
-            "game": 30003,
-            "rcon": 30103,
-        },
-        "public": {},
-        "extra": {
-            "memory": "4G",
-        },
-        "image": podman_jdk_image,
-        "run_command": paper_command,
-        "mounts": [*common_mounts],
-    },
-    "play": {
-        "ports": {
-            "game": 30004,
-            "rcon": 30104,
-        },
-        "public": {},
-        "extra": {
-            "memory": "4G",
-        },
-        "image": podman_jdk_image,
-        "run_command": paper_command,
-        "mounts": [*common_mounts],
-    },
-    "boat": {
-        "ports": {
-            "game": 30005,
-            "rcon": 30105,
-        },
-        "public": {},
-        "extra": {
-            "memory": "4G",
-        },
-        "image": podman_jdk_image,
-        "run_command": paper_command,
-        "mounts": [*common_mounts],
-    },
-    "competition": {
-        "ports": {
-            "game": 30006,
-            "rcon": 30106,
-        },
-        "public": {},
-        "extra": {
-            "memory": "4G",
-        },
-        "image": podman_jdk_image,
-        "run_command": paper_command,
-        "mounts": [*common_mounts],
-    },
+    ),
+    "school": paper_server(index=2, memory="4G"),
+    "survival": paper_server(index=3, memory="4G"),
+    "play": paper_server(index=4, memory="4G"),
+    "boat": paper_server(index=5, memory="4G"),
+    "competition": paper_server(index=6, memory="4G"),
     "prodxy": {
         "ports": {
             "game": 25565,
@@ -129,6 +71,32 @@ SERVERS = {
         "run_command": waterfall_command,
         "mounts": [*common_mounts],
     }
+}
+
+SERVICES = {
+    **SERVERS,
+    "chad": {
+        "ports": {},
+        "public": {},
+        "extra": {},
+        "image": podman_jdk_image,
+        "run_command": "cd /data && exec java -jar chad.jar config.yaml",
+        "mounts": [("/home/mcadmin/private/chad", "/data")],
+    },
+    "enginexd": {
+        "ports": {
+            "http": (42080, 80),
+            "https": (42043, 443),
+        },
+        "public": {"http", "https"},
+        "extra": {},
+        "image": "docker.io/library/nginx",
+        "mounts": [
+            ("/home/mcadmin/podshare/nginx", "/etc/nginx/conf.d"),
+            ("/home/mcadmin/private/letsencrypt", "/etc/letsencrypt"),
+            ("/home/mcadmin/private/wwwcertbot", "/var/www/certbot"),
+        ],
+    },
 }
 
 

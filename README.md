@@ -1,8 +1,8 @@
 # PyJorebs
 
-`mv config.example.py config.py`
+`mv secrets_example.py secrets.py`
 
-Then do konfig stuff.
+Then do sekret stuff.
 Done.
 Yes.
 

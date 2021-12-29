@@ -80,7 +80,7 @@ SERVICES = {
         "public": {},
         "extra": {},
         "image": podman_jdk_image,
-        "run_command": "cd /data && exec java -jar chad.jar config.yaml",
+        "run_command": "cd /data && exec java -jar Chad-1.0-all.jar config.yaml",
         "mounts": [("/home/mcadmin/private/chad", "/data")],
     },
     "enginexd": {
@@ -102,3 +102,4 @@ SERVICES = {
 
 SERVERS_LOCATION = Path("/home/mcadmin/prod")
 DESTINATION = Path("/store/backups")
+

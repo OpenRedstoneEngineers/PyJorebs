@@ -24,6 +24,7 @@ dynmap_mount = ("/store/tiles/{server}", "/data/plugins/dynmap/web/tiles")
 memory_opts = "-Xms{memory} -Xmx{memory}"
 paper_command = f"cd /data && exec java {memory_opts} -jar /common/paper-1.17.1-398.jar" + " {extra_args}"
 waterfall_command = f"cd /data && exec java --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/sun.net.www.protocol.https=ALL-UNNAMED {memory_opts} -jar " + "/common/waterfall-{waterfall_version}.jar {extra_args}"
+velocity_command = f"cd /data && exec java {memory_opts} -jar " + "/common/velocity-{velocity_version}.jar {extra_args}"
 podman_jdk_image = "docker.io/library/openjdk:16.0.2-slim"
 
 def paper_server(index, memory):
@@ -66,6 +67,7 @@ SERVERS = {
         "public": {"game"},
         "extra": {
             "memory": "1G",
+            "waterfall_version": "1.18-466",
         },
         "image": podman_jdk_image,
         "run_command": waterfall_command,
@@ -78,9 +80,7 @@ SERVICES = {
     "chad": {
         "ports": {},
         "public": {},
-        "extra": {
-            "waterfall_version": "1.18-466",
-        },
+        "extra": {},
         "image": podman_jdk_image,
         "run_command": "cd /data && exec java -jar Chad-1.0-all.jar config.yaml",
         "mounts": [("/home/mcadmin/private/chad", "/data")],
@@ -117,11 +117,11 @@ SERVICES = {
         },
         "public": "game",
         "extra": {
-            "waterfall_version": "1.17-454",
+            "velocity_version": "3.1.1-102",
             "memory": "1G",
         },
         "image": podman_jdk_image,
-        "run_command": waterfall_command,
+        "run_command": velocity_command,
         "mounts": [
             ("/home/mcadmin/dev/{server}", "/data"),
             ("/home/mcadmin/dev/common", "/common"),

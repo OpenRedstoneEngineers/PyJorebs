@@ -120,7 +120,7 @@ SERVICES = {
             "waterfall_version": "1.17-454",
         },
         "image": podman_jdk_image,
-        "command": waterfall_command,
+        "run_command": waterfall_command,
         "mounts": [
             ("/home/mcadmin/dev/{server}", "/data"),
             ("/home/mcadmin/dev/common", "/common"),

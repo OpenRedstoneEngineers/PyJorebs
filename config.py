@@ -97,6 +97,17 @@ SERVICES = {
             ("/home/mcadmin/private/wwwcertbot", "/var/www/certbot"),
         ],
     },
+    "mchprs": {
+        "ports": {
+            "mc": (42069, 25565),
+        },
+        "public": "mc",
+        "extra": {},
+        "image": "docker.io/mchprs/mchprs:plot-scale-5",
+        "mounts": [
+            ("/home/mcadmin/private/mchprs", "/data"),
+        ],
+    },
 }
 
 

@@ -23,7 +23,7 @@ dynmap_mount = ("/store/tiles/{server}", "/data/plugins/dynmap/web/tiles")
 
 memory_opts = "-Xms{memory} -Xmx{memory}"
 paper_command = f"cd /data && exec java {memory_opts} -jar /common/paper-1.17.1-398.jar" + " {extra_args}"
-waterfall_command = f"cd /data && exec java --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/sun.net.www.protocol.https=ALL-UNNAMED {memory_opts} -jar /common/waterfall-1.18-466.jar" + " {extra_args}"
+waterfall_command = f"cd /data && exec java --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/sun.net.www.protocol.https=ALL-UNNAMED {memory_opts} -jar " + "/common/waterfall-{waterfall_version}.jar {extra_args}"
 podman_jdk_image = "docker.io/library/openjdk:16.0.2-slim"
 
 def paper_server(index, memory):
@@ -78,7 +78,9 @@ SERVICES = {
     "chad": {
         "ports": {},
         "public": {},
-        "extra": {},
+        "extra": {
+            "waterfall_version": "1.18-466",
+        },
         "image": podman_jdk_image,
         "run_command": "cd /data && exec java -jar Chad-1.0-all.jar config.yaml",
         "mounts": [("/home/mcadmin/private/chad", "/data")],
@@ -99,14 +101,29 @@ SERVICES = {
     },
     "mchprs": {
         "ports": {
-            "mc": (42069, 25565),
+            "game": (42068, 25565),
         },
-        "public": "mc",
+        "public": {},
         "extra": {},
         "image": "docker.io/stackdoubleflow/mchprs:plot-scale-5",
         "mounts": [
             ("/home/mcadmin/private/mchprs", "/data"),
             ("/home/mcadmin/actual_schematics", "/data/schems"),
+        ],
+    },
+    "devxy": {
+        "ports": {
+            "game": (42069, 25565),
+        },
+        "public": "game",
+        "extra": {
+            "waterfall_version": "1.17-454",
+        },
+        "image": podman_jdk_image,
+        "command": waterfall_command,
+        "mounts": [
+            ("/home/mcadmin/dev/{server}", "/data"),
+            ("/home/mcadmin/dev/common", "/common"),
         ],
     },
 }

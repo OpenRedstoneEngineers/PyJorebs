@@ -113,7 +113,7 @@ SERVICES = {
     },
     "devxy": {
         "ports": {
-            "game": (42069, 25565),
+            "game": (42069, 25577),
         },
         "public": "game",
         "extra": {

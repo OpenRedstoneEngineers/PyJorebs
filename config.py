@@ -106,6 +106,7 @@ SERVICES = {
         "image": "docker.io/stackdoubleflow/mchprs:plot-scale-5",
         "mounts": [
             ("/home/mcadmin/private/mchprs", "/data"),
+            ("/home/mcadmin/actual_schematics", "/data/schems"),
         ],
     },
 }

@@ -118,6 +118,7 @@ SERVICES = {
         "public": "game",
         "extra": {
             "waterfall_version": "1.17-454",
+            "memory": "1G",
         },
         "image": podman_jdk_image,
         "run_command": waterfall_command,

@@ -103,7 +103,7 @@ SERVICES = {
         },
         "public": "mc",
         "extra": {},
-        "image": "docker.io/mchprs/mchprs:plot-scale-5",
+        "image": "docker.io/stackdoubleflow/mchprs:plot-scale-5",
         "mounts": [
             ("/home/mcadmin/private/mchprs", "/data"),
         ],

@@ -13,12 +13,31 @@ def do_download(download: Download, into: Path):
 
 PAPER_API = "https://papermc.io/api/v2"
 GITHUB_API = "https://api.github.com"
+# job: LuckPerms
+LUCKO_JENKINS = "https://ci.lucko.me"
+# job: LibertyBans
+LIBERTY_JENKINS = "https://ci.hahota.net"
 
 
 def rest_get(url):
     r = requests.get(url)
     r.raise_for_status()
     return r.json()
+
+
+def jenkins_build(base_url, job):
+    # also has number which is build number
+    return rest_get(f"{base_url}/job/{job}/lastSuccessfulBuild/api/json")
+
+
+def jenkins_artifact(base_url, job, artifact_type):
+    build_info = jenkins_build(base_url, job)
+    artifact = next(artifact for artifact in build_info["artifacts"] if artifact["fileName"].find(artifact_type) != -1)
+    url = artifact["relativePath"]
+    return Download(
+        url=f"{base_url}/job/{job}/lastSuccessfulBuild/artifact/{url}",
+        path=artifact["fileName"],
+    )
 
 
 def papermc_project(project):

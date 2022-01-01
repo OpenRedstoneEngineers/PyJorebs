@@ -20,10 +20,11 @@ common_mounts = [
 ]
 dynmap_mount = ("/store/tiles/{server}", "/data/plugins/dynmap/web/tiles")
 
+khttp_hack = "--add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/sun.net.www.protocol.https=ALL-UNNAMED"
 
 memory_opts = "-Xms{memory} -Xmx{memory}"
 paper_command = f"cd /data && exec java {memory_opts} -jar /common/paper-1.17.1-398.jar" + " {extra_args}"
-waterfall_command = f"cd /data && exec java --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/sun.net.www.protocol.https=ALL-UNNAMED {memory_opts} -jar " + "/common/waterfall-{waterfall_version}.jar {extra_args}"
+waterfall_command = f"cd /data && exec java {khttp_hack} {memory_opts} -jar " + "/common/waterfall-{waterfall_version}.jar {extra_args}"
 velocity_command = f"cd /data && exec java {memory_opts} -jar " + "/common/velocity-{velocity_version}.jar {extra_args}"
 podman_jdk_image = "docker.io/library/openjdk:16.0.2-slim"
 
@@ -82,7 +83,7 @@ SERVICES = {
         "public": {},
         "extra": {},
         "image": podman_jdk_image,
-        "run_command": "cd /data && exec java -jar Chad-1.0-all.jar config.yaml",
+        "run_command": f"cd /data && exec java {khttp_hack} -jar Chad-1.0-all.jar config.yaml",
         "mounts": [("/home/mcadmin/private/chad", "/data")],
     },
     "enginexd": {

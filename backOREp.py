@@ -2,7 +2,6 @@
 import argparse
 import logging
 import sys
-import tarfile
 import time
 from contextlib import contextmanager
 from datetime import datetime
@@ -10,6 +9,7 @@ from datetime import datetime
 import rcon
 
 from config import SERVERS, DESTINATION, SERVERS_LOCATION, secrets
+from util import make_tar
 
 _NAME = "BackOREp"
 _LOGGER = logging.getLogger(_NAME)
@@ -40,14 +40,6 @@ def is_world(path) -> bool:
     )
 
 
-def make_tar(source, output):
-    output.parent.mkdir(parents=True, exist_ok=True)
-    destination = output.with_suffix(".tar.gz")
-    _LOGGER.debug(f"Generating tar {destination} from {source}")
-    with tarfile.open(destination, "w:gz") as tar:
-        tar.add(source, arcname=source.name)
-
-
 def simple(server):
     _LOGGER.debug(f"Performing simple backup of server {server['name']}")
     with save_off(server):
@@ -61,6 +53,7 @@ def simple(server):
             source = server["location"] / world.name
             name = f"{world.name}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
             destination = DESTINATION / server["name"] / "simple" / name
+            _LOGGER.debug(f"Generating tar {destination} from {source}")
             make_tar(source, destination)
 
 
@@ -69,6 +62,7 @@ def full(server):
     with save_off(server):
         source = server["location"]
         destination = DESTINATION / server["name"] / "full" / datetime.now().strftime('%Y%m%d%H%M%S')
+        _LOGGER.debug(f"Generating tar {destination} from {source}")
         make_tar(source, destination)
 
 

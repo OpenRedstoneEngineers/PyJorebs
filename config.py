@@ -6,7 +6,9 @@ except ImportError:
     import secrets_example as secrets
 
 from pathlib import Path
+
 from mergedeep import Strategy, merge as do_merge
+
 
 def merge(*args, **kwargs):
     return do_merge(*args, strategy=Strategy.ADDITIVE, **kwargs)
@@ -28,6 +30,7 @@ waterfall_command = f"cd /data && exec java {khttp_hack} {memory_opts} -jar " + 
 velocity_command = f"cd /data && exec java {memory_opts} -jar " + "/common/velocity-{velocity_version}.jar {extra_args}"
 podman_jdk_image = "docker.io/library/openjdk:16.0.2-slim"
 
+
 def paper_server(index, memory):
     return {
         "ports": {
@@ -42,6 +45,7 @@ def paper_server(index, memory):
         "run_command": paper_command,
         "mounts": [*common_mounts],
     }
+
 
 SERVERS = {
     "hub": paper_server(index=0, memory="2G"),
@@ -130,7 +134,5 @@ SERVICES = {
     },
 }
 
-
 SERVERS_LOCATION = Path("/home/mcadmin/prod")
 DESTINATION = Path("/store/backups")
-

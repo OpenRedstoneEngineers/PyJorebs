@@ -3,6 +3,7 @@ import argparse
 import logging
 import subprocess
 import sys
+from datetime import datetime
 
 from config import DESTINATION
 from secrets import MYSQL_PASS
@@ -14,7 +15,7 @@ _LOGGER.setLevel(logging.DEBUG)
 
 
 def doremp(user, password):
-    doremp_location = DESTINATION / "databases" / "databases.sql"
+    doremp_location = DESTINATION / "databases" / f"databases_{datetime.now().strftime('%Y%m%d%H%M%S')}.sql"
     _LOGGER.info("Initiating dump")
     sub = subprocess.Popen(["podman", "exec", "mariadb", "mysqldump", "--all-databases", f"-u{user}", f"-p{password}"],
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)

@@ -30,6 +30,13 @@ waterfall_command = f"cd /data && exec java {khttp_hack} {memory_opts} -jar " + 
 velocity_command = f"cd /data && exec java {memory_opts} -jar " + "/common/velocity-{velocity_version}.jar {extra_args}"
 podman_jdk_image = "docker.io/library/openjdk:16.0.2-slim"
 
+restoret_schedule = {
+    300: "Server restart in 5 minutes",
+    60: "Server restart in 1 minute",
+    20: "Server restart in 20 seconds",
+    5: "Server restarting..."
+}
+
 
 def paper_server(index, memory):
     return {

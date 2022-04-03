@@ -28,8 +28,8 @@ def duplicate_first(iterable):
 
 def restoret_times():
     times_offsetted = duplicate_first(restoret_schedule.keys())
-    for (timeout, statement), next_timeout in zip(restoret_schedule.items(), times_offsetted):
-        yield timeout - next_timeout, statement
+    for (timeout, statement), prev_timeout in zip(restoret_schedule.items(), times_offsetted):
+        yield prev_timeout - timeout, statement
 
 
 async def restoret(port):

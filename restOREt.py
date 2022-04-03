@@ -12,11 +12,30 @@ _LOGGER = logging.getLogger(_NAME)
 _LOGGER.setLevel(logging.DEBUG)
 
 
-async def send(delay, rcon_ports, command):
-    _LOGGER.info(f"Running command \"{command}\" after {delay} seconds")
+async def send(delay, rcon_port, command):
+    _LOGGER.info(f"Running command \"{command}\" against \"{rcon_port}\" after {delay} seconds")
     await asyncio.sleep(delay)
-    rcOREn.run(rcon_ports, command)
-    _LOGGER.info(f"Completing command \"{command}\"")
+    rcOREn.run(rcon_port, command, _LOGGER)
+    _LOGGER.info(f"Ran \"{command}\" against \"{rcon_port}\"")
+
+
+def duplicate_first(iterable):
+    from itertools import chain
+    it = iter(iterable)
+    x = next(it)
+    return chain((x, x), it)
+
+
+def restoret_times():
+    times_offsetted = duplicate_first(restoret_schedule.keys())
+    for (timeout, statement), next_timeout in zip(restoret_schedule.items(), times_offsetted):
+        yield timeout - next_timeout, statement
+
+
+async def restoret(port):
+    for delay, statement in restoret_times():
+        await send(delay, port, statement)
+    return "Restarting..."
 
 
 async def main():
@@ -32,18 +51,13 @@ async def main():
         console_handler.setFormatter(logging.Formatter('[%(asctime)s] %(name)s - %(levelname)s: %(message)s'))
         _LOGGER.addHandler(console_handler)
 
-    restart_in = next(iter(restoret_schedule.keys()))
-
     rcon_ports = [SERVERS[server]['ports']['rcon'] for server in args.servers]
 
-    tasks = [
-        asyncio.create_task(send(restart_in - timeout, rcon_ports, f'title @a title {{"text":"{statement}"}}'))
-        for timeout, statement in restoret_schedule.items()
-    ]
-
-    tasks.append(asyncio.create_task(send(restart_in, rcon_ports, "stop")))
-
-    [await task for task in tasks]
+    for statement in await asyncio.gather(
+        *(restoret(port) for port in rcon_ports),
+        return_exceptions=True,
+    ):
+        _LOGGER.info(statement)
 
 
 if __name__ == "__main__":

@@ -14,12 +14,19 @@ _LOGGER = logging.getLogger(_NAME)
 _LOGGER.setLevel(logging.DEBUG)
 
 
-def run(rcon_ports: List[int], command: str):
+def run(port: int, command: str, logger):
+    with rcon.Client('localhost', port, passwd=secrets.RCON_PASS) as client:
+        logger.info(f"Port '{port}': running '{command}'")
+        response = re.sub(r"""§[0-9a-flmno]""", "", client.run(command))
+        logger.info(f"Response:\n{response}")
+
+
+def _run(rcon_ports: List[int], command: str):
     for port in rcon_ports:
-        with rcon.Client('localhost', port, passwd=secrets.RCON_PASS) as client:
-            _LOGGER.info(f"Port '{port}': running '{command}'")
-            response = re.sub(r"""§[0-9a-flmno]""", "", client.run(command))
-            _LOGGER.info(f"Response:\n{response}")
+        try:
+            run(port, command, _LOGGER)
+        except ConnectionRefusedError as e:
+            _LOGGER.error(e)
 
 
 def main():
@@ -37,7 +44,7 @@ def main():
         console_handler.setFormatter(logging.Formatter('[%(asctime)s] %(name)s - %(levelname)s: %(message)s'))
         _LOGGER.addHandler(console_handler)
 
-    run([SERVERS[server]['ports']['rcon'] for server in args.servers], " ".join(args.command))
+    _run([SERVERS[server]['ports']['rcon'] for server in args.servers], " ".join(args.command))
 
 
 if __name__ == "__main__":

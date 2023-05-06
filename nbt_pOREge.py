@@ -91,15 +91,15 @@ def _run(servers, _time):
         playerdata_location = SERVERS_LOCATION / server / "world" / "playerdata" / "*.dat"
         for playerdata_file in get_dats(str(playerdata_location), _time):
             _LOGGER.debug(f"Found file {playerdata_file}")
-            nbtfile = NBTFile(playerdata_file, "rb")
-            for index, item in enumerate(nbtfile['Inventory']):
-                try:
+            try:
+                nbtfile = NBTFile(playerdata_file, "rb")
+                for index, item in enumerate(nbtfile['Inventory']):
                     size = get_tag_size(item, type_distinction=False)
                     if size > 2097152:
                         _LOGGER.info(f"\'{playerdata_file}\' has an item in slot {index} of size {size}: {item}")
                         write_slot(nbtfile, index)
-                except UnicodeDecodeError:
-                    _LOGGER.error(f"Error parsing NBT file \'{playerdata_file}\'")
+            except UnicodeDecodeError:
+                _LOGGER.error(f"Error parsing NBT file \'{playerdata_file}\'")
 
 
 def main():

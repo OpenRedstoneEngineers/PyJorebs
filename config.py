@@ -25,10 +25,10 @@ dynmap_mount = ("/store/tiles/{server}", "/data/plugins/dynmap/web/tiles")
 khttp_hack = "--add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/sun.net.www.protocol.https=ALL-UNNAMED"
 
 memory_opts = "-Xms{memory} -Xmx{memory}"
-paper_command = f"cd /data && exec java {memory_opts} -jar /common/paper-1.17.1-408.jar" + " {extra_args}"
+paper_command = f"cd /data && exec java {memory_opts} -jar /common/paper-1.18.2-387.jar" + " {extra_args}"
 waterfall_command = f"cd /data && exec java {khttp_hack} {memory_opts} -jar " + "/common/waterfall-{waterfall_version}.jar {extra_args}"
 velocity_command = f"cd /data && exec java {memory_opts} -jar " + "/common/velocity-{velocity_version}.jar {extra_args}"
-podman_jdk_image = "docker.io/library/openjdk:16.0.2-slim"
+podman_jdk_image = "docker.io/library/openjdk:17.0.2-slim"
 
 
 def title(command):
@@ -78,6 +78,7 @@ SERVERS = {
     "play": paper_server(index=4, memory="4G"),
     "boat": paper_server(index=5, memory="4G"),
     "competition": paper_server(index=6, memory="4G"),
+    "seasonal": paper_server(index=7, memory="4G"),
     "prodxy": {
         "ports": {
             "game": 25565,
@@ -85,7 +86,7 @@ SERVERS = {
         "public": {"game"},
         "extra": {
             "memory": "1G",
-            "waterfall_version": "1.18-466",
+            "waterfall_version": "1.19-498",
         },
         "image": podman_jdk_image,
         "run_command": waterfall_command,
@@ -112,6 +113,7 @@ SERVICES = {
         "extra": {},
         "image": "docker.io/library/nginx",
         "mounts": [
+            ("/store/archive", "/var/www/archive.openredstone.org"),
             ("/home/mcadmin/podshare/nginx", "/etc/nginx/conf.d"),
             ("/home/mcadmin/private/letsencrypt", "/etc/letsencrypt"),
             ("/home/mcadmin/private/wwwcertbot", "/var/www/certbot"),

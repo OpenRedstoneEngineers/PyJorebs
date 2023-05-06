@@ -15,7 +15,7 @@ _LOGGER.setLevel(logging.DEBUG)
 async def send(delay, rcon_port, command):
     _LOGGER.info(f"Running command \"{command}\" against \"{rcon_port}\" after {delay} seconds")
     await asyncio.sleep(delay)
-    rcOREn.run(rcon_port, command)
+    rcOREn.run(rcon_port, command, _LOGGER)
     _LOGGER.info(f"Ran \"{command}\" against \"{rcon_port}\"")
 
 

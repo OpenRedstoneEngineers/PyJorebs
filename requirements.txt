@@ -2,3 +2,4 @@ rcon~=1.3.6
 mergedeep
 requests
 PyYaml
+nbt

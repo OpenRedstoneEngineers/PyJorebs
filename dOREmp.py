@@ -3,6 +3,7 @@ import argparse
 import logging
 import subprocess
 import sys
+import time
 from datetime import datetime
 
 from config import DESTINATION
@@ -22,7 +23,9 @@ def doremp(user, password):
     output, error = sub.communicate()
     if sub.returncode == 0:
         _LOGGER.info("Generating dump")
+        time.sleep(2)  # This is an ugly hack
         doremp_location.write_bytes(output)
+        time.sleep(2)  # Dont tell Pauk
         _LOGGER.info("Compressing dump")
         make_tar(doremp_location, doremp_location.parent)
     else:

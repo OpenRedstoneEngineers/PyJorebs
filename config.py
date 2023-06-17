@@ -77,7 +77,7 @@ SERVERS = {
     "survival": paper_server(index=3, memory="4G"),
     "play": paper_server(index=4, memory="4G"),
     "boat": paper_server(index=5, memory="4G"),
-    "competition": paper_server(index=6, memory="4G"),
+    "competition": paper_server(index=6, memory="8G"),
     "seasonal": paper_server(index=7, memory="4G"),
     "prodxy": {
         "ports": {

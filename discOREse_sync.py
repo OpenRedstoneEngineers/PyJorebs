@@ -75,20 +75,20 @@ def update_mojang_data(username, mojang_uuid, mojang_name):
     resp = requests.put(f"{discourse_url}/u/{username}.json", headers=_DISCOURSE_HEADERS,
                         data={"user_fields[2]": mojang_name, "user_fields[3]": mojang_uuid})
     time.sleep(discourse_api_timeout)
-    return resp.status_code == 200
+    resp.raise_for_status()
 
 
 def add_discourse_group(user_id, group_id):
     resp = requests.post(f"{discourse_url}/admin/users/{user_id}/groups", headers=_DISCOURSE_HEADERS,
                          data={"group_id": group_id})
     time.sleep(discourse_api_timeout)
-    return resp.status_code == 200
+    resp.raise_for_status()
 
 
 def remove_discourse_group(user_id, group_id):
     resp = requests.delete(f"{discourse_url}/admin/users/{user_id}/groups/{group_id}", headers=_DISCOURSE_HEADERS)
     time.sleep(discourse_api_timeout)
-    return resp.status_code == 200
+    resp.raise_for_status()
 
 
 def _run():

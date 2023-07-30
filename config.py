@@ -29,6 +29,10 @@ paper_command = f"cd /data && exec java {memory_opts} -jar /common/paper-1.18.2-
 waterfall_command = f"cd /data && exec java {khttp_hack} {memory_opts} -jar " + "/common/waterfall-{waterfall_version}.jar {extra_args}"
 velocity_command = f"cd /data && exec java {memory_opts} -jar " + "/common/velocity-{velocity_version}.jar {extra_args}"
 podman_jdk_image = "docker.io/library/openjdk:17.0.2-slim"
+discourse_url = "https://discourse.openredstone.org"
+# Our discourse instance is self-hosted and our limit was customized to 500/minute
+# Despite this, a 0.1 delay is more than reasonable to handle the changes on a daily basis
+discourse_api_timeout = 0.1
 
 
 def title(command):

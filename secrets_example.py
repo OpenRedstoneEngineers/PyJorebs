@@ -1,2 +1,3 @@
 RCON_PASS = "passwOREd"
 MYSQL_PASS = "passwOREd"
+DISCOURSE_TOKEN = ""

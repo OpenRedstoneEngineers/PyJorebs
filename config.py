@@ -155,3 +155,4 @@ SERVICES = {
 
 SERVERS_LOCATION = Path("/home/mcadmin/prod")
 DESTINATION = Path("/store/backups")
+APPS_LOCATION = Path("/home/mcadmin/apps/accepted_apps.csv")

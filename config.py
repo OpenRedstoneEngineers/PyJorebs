@@ -29,6 +29,7 @@ paper_command = f"cd /data && exec java {memory_opts} -jar /common/paper-1.18.2-
 waterfall_command = f"cd /data && exec java {khttp_hack} {memory_opts} -jar " + "/common/waterfall-{waterfall_version}.jar {extra_args}"
 velocity_command = f"cd /data && exec java {memory_opts} -jar " + "/common/velocity-{velocity_version}.jar {extra_args}"
 podman_jdk_image = "docker.io/library/openjdk:17.0.2-slim"
+temurin_image = "docker.io/library/eclipse-temurin:22-jre-jammy"
 discourse_url = "https://discourse.openredstone.org"
 # Our discourse instance is self-hosted and our limit was customized to 500/minute
 # Despite this, a 0.1 delay is more than reasonable to handle the changes on a daily basis
@@ -83,6 +84,19 @@ SERVERS = {
     "boat": paper_server(index=5, memory="4G"),
     "competition": paper_server(index=6, memory="8G"),
     "seasonal": paper_server(index=7, memory="4G"),
+    "velocity": {
+        "ports": {
+            "game": 26666
+        },
+        "public": {"game"},
+        "extra": {
+            "memory": "1G",
+            "velocity_version": "3.3.0-SNAPSHOT-390"
+        },
+        "image": temurin_image,
+        "run_command": velocity_command,
+        "mounts": [*common_mounts]
+    },
     "prodxy": {
         "ports": {
             "game": 25565,
@@ -133,22 +147,6 @@ SERVICES = {
         "mounts": [
             ("/home/mcadmin/private/mchprs", "/data"),
             ("/home/mcadmin/actual_schematics", "/data/schems"),
-        ],
-    },
-    "devxy": {
-        "ports": {
-            "game": (42069, 25577),
-        },
-        "public": "game",
-        "extra": {
-            "velocity_version": "3.1.1-102",
-            "memory": "1G",
-        },
-        "image": podman_jdk_image,
-        "run_command": velocity_command,
-        "mounts": [
-            ("/home/mcadmin/dev/{server}", "/data"),
-            ("/home/mcadmin/dev/common", "/common"),
         ],
     },
 }

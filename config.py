@@ -59,7 +59,7 @@ def paper_server(index, memory):
         "extra": {
             "memory": memory,
         },
-        "image": podman_jdk_image,
+        "image": temurin_image,
         "run_command": paper_command,
         "mounts": [*common_mounts],
     }
@@ -86,7 +86,7 @@ SERVERS = {
     "seasonal": paper_server(index=7, memory="4G"),
     "velocity": {
         "ports": {
-            "game": 26666
+            "game": 25565
         },
         "public": {"game"},
         "extra": {

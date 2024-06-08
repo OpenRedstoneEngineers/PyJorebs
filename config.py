@@ -25,7 +25,7 @@ dynmap_mount = ("/store/tiles/{server}", "/data/plugins/dynmap/web/tiles")
 khttp_hack = "--add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/sun.net.www.protocol.https=ALL-UNNAMED"
 
 memory_opts = "-Xms{memory} -Xmx{memory}"
-paper_command = f"cd /data && exec java {memory_opts} -jar /common/paper-1.18.2-387.jar" + " {extra_args}"
+paper_command = f"cd /data && exec java {memory_opts} -jar /common/paper-1.20.4-496.jar" + " {extra_args}"
 waterfall_command = f"cd /data && exec java {khttp_hack} {memory_opts} -jar " + "/common/waterfall-{waterfall_version}.jar {extra_args}"
 velocity_command = f"cd /data && exec java {memory_opts} -jar " + "/common/velocity-{velocity_version}.jar {extra_args}"
 podman_jdk_image = "docker.io/library/openjdk:17.0.2-slim"

@@ -54,10 +54,10 @@ def fetch_discourse_users():
 def fetch_lp_users():
     with mysql.connector.connect(host="localhost", user="mcadmin", password=MYSQL_PASS) as conn:
         cursor = conn.cursor()
-        query = """SELECT uuid, ign, (UPPER(ign) != UPPER(username)) as ign_flag, discord_id, primary_group
-                    FROM network_link.nu_users
-                    JOIN ore_luckperms.luckperms_players on m_uuid = uuid
-                    WHERE discord_id IS NOT NULL;"""
+        query = """SELECT user_uuid, user_ign, (UPPER(user_ign) != UPPER(username)) as ign_flag, user_discord_id, primary_group
+                    FROM ore_linkore.linkore_user
+                    JOIN ore_luckperms.luckperms_players on user_uuid = uuid
+                    WHERE user_discord_id IS NOT NULL;"""
         cursor.execute(query)
         results = cursor.fetchall()
         return {

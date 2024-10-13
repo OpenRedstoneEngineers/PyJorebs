@@ -68,7 +68,7 @@ def paper_server(index, memory):
 SERVERS = {
     "hub": paper_server(index=0, memory="2G"),
     "build": merge(
-        paper_server(index=1, memory="8G"),
+        paper_server(index=1, memory="12G"),
         {
             "ports": {
                 "dynmap": 30201,

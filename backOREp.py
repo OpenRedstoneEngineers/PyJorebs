@@ -8,7 +8,7 @@ from datetime import datetime
 
 import rcon
 
-from config import SERVERS, DESTINATION, SERVERS_LOCATION, secrets
+from config import SERVERS, DESTINATION, SERVERS_LOCATION, RCON_PASS
 from util import make_tar
 
 _NAME = "BackOREp"
@@ -19,7 +19,7 @@ _LOGGER.setLevel(logging.DEBUG)
 @contextmanager
 def save_off(server):
     try:
-        with rcon.Client('localhost', server["ports"]["rcon"], passwd=secrets.RCON_PASS) as client:
+        with rcon.Client('localhost', server["ports"]["rcon"], passwd=RCON_PASS) as client:
             _LOGGER.debug(f"Running 'save-off', 'save-all' for {server['name']}")
             client.run('save-off')
             client.run('save-all')

@@ -7,8 +7,7 @@ import time
 import mysql.connector
 import requests
 
-from config import discourse_url, discourse_api_timeout
-from secrets import DISCOURSE_TOKEN, MYSQL_PASS
+from config import discourse_url, discourse_api_timeout, MYSQL_PASS, DISCOURSE_TOKEN
 
 _NAME = "discOREse_sync"
 _LOGGER = logging.getLogger(_NAME)

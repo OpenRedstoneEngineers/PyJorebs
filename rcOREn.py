@@ -7,7 +7,7 @@ from typing import List
 
 import rcon
 
-from config import SERVERS, secrets
+from config import SERVERS, RCON_PASS
 
 _NAME = "rcOREn"
 _LOGGER = logging.getLogger(_NAME)
@@ -15,7 +15,7 @@ _LOGGER.setLevel(logging.DEBUG)
 
 
 def run(port: int, command: str, logger):
-    with rcon.Client('localhost', port, passwd=secrets.RCON_PASS) as client:
+    with rcon.Client('localhost', port, passwd=RCON_PASS) as client:
         logger.info(f"Port '{port}': running '{command}'")
         response = re.sub(r"""§[0-9a-flmno]""", "", client.run(command))
         logger.info(f"Response:\n{response}")

@@ -7,8 +7,7 @@ import sys
 import mysql.connector
 import requests
 
-from config import discourse_url, APPS_LOCATION
-from secrets import DISCOURSE_TOKEN, MYSQL_PASS
+from config import discourse_url, APPS_LOCATION, MYSQL_PASS, DISCOURSE_TOKEN
 
 _NAME = "fOREtch_apps"
 _LOGGER = logging.getLogger(_NAME)

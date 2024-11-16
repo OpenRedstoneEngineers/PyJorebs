@@ -5,7 +5,7 @@ from pathlib import Path
 
 from mergedeep import Strategy, merge as do_merge
 
-load_dotenv(".env")
+load_dotenv(Path(__file__).parent / ".env"))
 
 RCON_PASS = getenv("RCON_PASS")
 MYSQL_PASS = getenv("MYSQL_PASS")

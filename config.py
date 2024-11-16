@@ -1,14 +1,15 @@
-try:
-    import secrets
-except ImportError:
-    print("Could not find secrets.py! Using example configuration")
-    # TODO: this is probably bad, but it makes the IDE happy
-    import secrets_example as secrets
+from dotenv import load_dotenv
+from os import getenv
 
 from pathlib import Path
 
 from mergedeep import Strategy, merge as do_merge
 
+load_dotenv(Path(__file__).parent / ".env")
+
+RCON_PASS = getenv("RCON_PASS")
+MYSQL_PASS = getenv("MYSQL_PASS")
+DISCOURSE_TOKEN = getenv("DISCOURSE_TOKEN")
 
 def merge(*args, **kwargs):
     return do_merge(*args, strategy=Strategy.ADDITIVE, **kwargs)

@@ -6,8 +6,7 @@ import sys
 import time
 from datetime import datetime
 
-from config import DESTINATION
-from secrets import MYSQL_PASS
+from config import DESTINATION, MYSQL_PASS
 from util import make_tar
 
 _NAME = "dOREmp"

@@ -27,8 +27,7 @@ khttp_hack = "--add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/s
 
 memory_opts = "-Xms{memory} -Xmx{memory}"
 paper_command = f"cd /data && exec java {memory_opts} -jar /common/paper-1.20.4-496.jar" + " {extra_args}"
-waterfall_command = f"cd /data && exec java {khttp_hack} {memory_opts} -jar " + "/common/waterfall-{waterfall_version}.jar {extra_args}"
-velocity_command = f"cd /data && exec java {memory_opts} -jar " + "/common/velocity-{velocity_version}.jar {extra_args}"
+velocity_command = f"cd /data && exec java {khttp_hack} {memory_opts} -jar " + "/common/velocity-{velocity_version}.jar {extra_args}"
 podman_jdk_image = "docker.io/library/openjdk:17.0.2-slim"
 temurin_image = "docker.io/library/eclipse-temurin:22-jre-jammy"
 discourse_url = "https://discourse.openredstone.org"
@@ -97,19 +96,6 @@ SERVERS = {
         "image": temurin_image,
         "run_command": velocity_command,
         "mounts": [*common_mounts]
-    },
-    "prodxy": {
-        "ports": {
-            "game": 25565,
-        },
-        "public": {"game"},
-        "extra": {
-            "memory": "1G",
-            "waterfall_version": "1.19-498",
-        },
-        "image": podman_jdk_image,
-        "run_command": waterfall_command,
-        "mounts": [*common_mounts],
     }
 }
 

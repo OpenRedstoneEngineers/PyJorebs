@@ -12,11 +12,11 @@ _LOGGER = logging.getLogger(_NAME)
 _LOGGER.setLevel(logging.DEBUG)
 
 
-async def send(delay, rcon_port, command):
-    _LOGGER.info(f"Running command \"{command}\" against \"{rcon_port}\" after {delay} seconds")
+async def send(delay, rcon_port, commands):
     await asyncio.sleep(delay)
-    rcOREn.run(rcon_port, command, _LOGGER)
-    _LOGGER.info(f"Ran \"{command}\" against \"{rcon_port}\"")
+    for command in commands:
+        _LOGGER.info(f"Running command \"{command}\" against \"{rcon_port}\" after {delay} seconds")
+        rcOREn.run(rcon_port, command, _LOGGER)
 
 
 def duplicate_first(iterable):
@@ -33,8 +33,8 @@ def restoret_times():
 
 
 async def restoret(port):
-    for delay, statement in restoret_times():
-        await send(delay, port, statement)
+    for delay, statements in restoret_times():
+        await send(delay, port, statements)
     return "Restarting..."
 
 

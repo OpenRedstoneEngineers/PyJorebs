@@ -36,16 +36,17 @@ discourse_url = "https://discourse.openredstone.org"
 discourse_api_timeout = 0.1
 
 
-def title(command):
-    return f'title @a title {{"text":"{command}"}}'
+def title(title_, subtitle):
+    yield f'title @a title {{"text":"{title_}"}}'
+    yield f'title @a subtitle {{"text":"{subtitle}"}}'
 
 
 restoret_schedule = {
-    300: title("Server restart in 5 minutes"),
-    60: title("Server restart in 1 minute"),
-    20: title("Server restart in 20 seconds"),
-    5: title("Server restarting..."),
-    0: "stop",
+    300: title("Server restart", "5 minutes"),
+    60: title("Server restart", "1 minute"),
+    20: title("Server restart", "20 seconds"),
+    5: title("Server restarting...", ""),
+    0: ["stop"],
 }
 
 

@@ -35,9 +35,8 @@ def save_off(server):
 
 
 def is_world(path) -> bool:
-    return {"level.dat", "session.lock", "uid.dat"}.issubset(
-        child.name for child in path.iterdir() if not child.is_dir()
-    )
+    items = [child.name for child in path.iterdir() if not child.is_dir()]
+    return {"level.dat", "session.lock", "uid.dat"}.issubset(items) and ".backupignore" not in items
 
 
 def simple(server):

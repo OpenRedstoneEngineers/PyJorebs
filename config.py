@@ -37,8 +37,8 @@ discourse_api_timeout = 0.1
 
 
 def title(title_, subtitle):
-    yield f'title @a title {{"text":"{title_}"}}'
-    yield f'title @a subtitle {{"text":"{subtitle}"}}'
+    return  (f'title @a title {{"text":"{title_}"}}',
+             f'title @a subtitle {{"text":"{subtitle}"}}')
 
 
 restoret_schedule = {

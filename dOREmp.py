@@ -17,7 +17,7 @@ _LOGGER.setLevel(logging.DEBUG)
 def doremp(user, password):
     doremp_location = DESTINATION / "databases" / f"databases_{datetime.now().strftime('%Y%m%d%H%M%S')}.sql"
     _LOGGER.info("Initiating dump")
-    command = f"podman exec mariadb mysqldump --hex-blob --all-databases -u{user} -p{password}".split(" ")
+    command = f"podman exec compose_mariadb_1 mysqldump --hex-blob --all-databases -u{user} -p{password}".split(" ")
     sub = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = sub.communicate()
     if sub.returncode == 0:

@@ -10,7 +10,7 @@ load_dotenv(Path(__file__).parent / ".env")
 RCON_PASS = getenv("RCON_PASS")
 MYSQL_PASS = getenv("MYSQL_PASS")
 DISCOURSE_TOKEN = getenv("DISCOURSE_TOKEN")
-NUDGORE_WEBHOOK = getenv("NUDGORE_WEBHOOK")
+NUDGEORE_WEBHOOK = getenv("NUDGORE_WEBHOOK")
 
 def merge(*args, **kwargs):
     return do_merge(*args, strategy=Strategy.ADDITIVE, **kwargs)
@@ -144,7 +144,18 @@ SERVERS_LOCATION = Path("/home/mcadmin/prod")
 DESTINATION = Path("/store/backups")
 APPS_LOCATION = Path("/home/mcadmin/apps/accepted_apps.csv")
 
-NUDGORE_HOURS = 24
+NUDGEORE_HOURS = 24
 DISCOURSE_URL = "https://discourse.openredstone.org"  # Ends without /
-NUDGORE_RATELIMIT = 5
+NUDGEORE_RATELIMIT = 5
 DISCORD_LIMIT = 2000  # Discord's message character limit
+
+def get_discourse_url(stub) -> str:
+    return f"{DISCOURSE_URL}/{stub}"
+
+NUDGEORE_LINKS = (
+    get_discourse_url("c/builder-applications/9.json"),
+    get_discourse_url("c/engineer-applications/22.json"),
+    get_discourse_url("c/moderation/petitions/20.json"),
+    get_discourse_url("c/moderation/appeals/31.json"),
+    get_discourse_url("c/moderation/suggestions/19.json"),
+)

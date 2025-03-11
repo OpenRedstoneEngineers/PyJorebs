@@ -6,16 +6,12 @@ import sys
 import requests
 import time
 
-from config import DISCOURSE_URL, NUDGORE_HOURS, NUDGORE_WEBHOOK, DISCORD_LIMIT, NUDGORE_RATELIMIT
+from config import NUDGEORE_HOURS, NUDGEORE_WEBHOOK, DISCORD_LIMIT, NUDGEORE_RATELIMIT, get_discourse_url, NUDGEORE_LINKS
 
 
 _NAME = "nudgeORE"
 _LOGGER = logging.getLogger(_NAME)
 _LOGGER.setLevel(logging.DEBUG)
-
-
-def get_url(stub) -> str:
-    return f"{DISCOURSE_URL}/{stub}"
 
 
 def get_forum_title(url) -> str:
@@ -29,7 +25,7 @@ def hours_since(date_string: str, hours) -> bool:
 
 def parse_forum(forum: dict):
     for topic in forum["topic_list"]["topics"]:
-        if not hours_since(topic["last_posted_at"], NUDGORE_HOURS): continue
+        if not hours_since(topic["last_posted_at"], NUDGEORE_HOURS): continue
 
         most_recent_poster = [poster for poster in topic["posters"] if "Most Recent Poster" in poster["description"]][0]
         last_poster = [user for user in forum["users"] if user["id"] == most_recent_poster["user_id"]][0]
@@ -39,11 +35,11 @@ def parse_forum(forum: dict):
         if topic["closed"] or topic["archived"]:
             continue
 
-        yield {"id": topic["id"], "title": topic["title"], "url": get_url(f"t/{topic['slug']}/{topic['id']}")}
+        yield {"id": topic["id"], "title": topic["title"], "url": get_discourse_url(f"t/{topic['slug']}/{topic['id']}")}
 
 
 def post_to_discord(posts: list, title: str) -> bool:
-    if not NUDGORE_WEBHOOK:
+    if not NUDGEORE_WEBHOOK:
         _LOGGER.error("NudgeORE: Discord webhook URL is not set")
         return False
 
@@ -84,14 +80,14 @@ def post_to_discord(posts: list, title: str) -> bool:
 def _post_webhook(data):
     retries = 3
     for i in range(retries):
-        response = requests.post(NUDGORE_WEBHOOK, json=data)
+        response = requests.post(NUDGEORE_WEBHOOK, json=data)
         if response.status_code == 204:
             _LOGGER.info("Message sent successfully")
             return True
         else:
             _LOGGER.error(f"Failed to send message. Status code: {response.status_code}. Retrying...")
             _LOGGER.error(f"Response content: {response.text}")
-            time.sleep(NUDGORE_RATELIMIT)
+            time.sleep(NUDGEORE_RATELIMIT)
     return False
 
 
@@ -105,19 +101,11 @@ def main() -> None:
         console_handler.setFormatter(logging.Formatter('[%(asctime)s] %(name)s - %(levelname)s: %(message)s'))
         _LOGGER.addHandler(console_handler)
 
-    links = (
-        get_url("c/builder-applications/9.json"),
-        get_url("c/engineer-applications/22.json"),
-        get_url("c/moderation/petitions/20.json"),
-        get_url("c/moderation/appeals/31.json"),
-        get_url("c/moderation/suggestions/19.json"),
-    )
-
-    for link in links:
+    for link in NUDGEORE_LINKS:
         parsed = requests.get(link).json()
         output = [entry for entry in parse_forum(parsed)]
         post_to_discord(output, get_forum_title(link))
-        time.sleep(NUDGORE_RATELIMIT)
+        time.sleep(NUDGEORE_RATELIMIT)
 
 
 if __name__ == "__main__":

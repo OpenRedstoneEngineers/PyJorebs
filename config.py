@@ -10,7 +10,7 @@ load_dotenv(Path(__file__).parent / ".env")
 RCON_PASS = getenv("RCON_PASS")
 MYSQL_PASS = getenv("MYSQL_PASS")
 DISCOURSE_TOKEN = getenv("DISCOURSE_TOKEN")
-NUDGEORE_WEBHOOK = getenv("NUDGORE_WEBHOOK")
+NUDGEORE_WEBHOOK = getenv("NUDGEORE_WEBHOOK")
 
 def merge(*args, **kwargs):
     return do_merge(*args, strategy=Strategy.ADDITIVE, **kwargs)

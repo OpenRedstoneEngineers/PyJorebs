@@ -4,7 +4,7 @@ RequiresMountsFor=/var/run/container/storage
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
-TimeoutStartSec=1
+TimeoutStartSec=5
 
 ExecStartPre=-/usr/bin/podman stop %i
 ExecStartPre=-/usr/bin/podman rm --ignore -f %i

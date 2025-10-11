@@ -80,7 +80,7 @@ SERVERS = {
             "mounts": [dynmap_mount],
         },
     ),
-    "school": paper_server(index=2, memory="4G"),
+    "school": paper_server(index=2, memory="6G"),
     "survival": paper_server(index=3, memory="4G"),
     "play": paper_server(index=4, memory="4G"),
     "boat": paper_server(index=5, memory="4G"),

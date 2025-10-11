@@ -27,7 +27,7 @@ dynmap_mount = ("/store/tiles/{server}", "/data/plugins/dynmap/web/tiles")
 khttp_hack = "--add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/sun.net.www.protocol.https=ALL-UNNAMED"
 
 memory_opts = "-Xms{memory} -Xmx{memory}"
-paper_command = f"cd /data && exec java {khttp_hack} {memory_opts} -jar /common/paper-1.20.4-496.jar" + " {extra_args}"
+paper_command = f"cd /data && exec java {khttp_hack} {memory_opts} -jar /common/paper-1.21.8-60.jar" + " {extra_args}"
 velocity_command = f"cd /data && exec java {khttp_hack} {memory_opts} -jar " + "/common/velocity-{velocity_version}.jar {extra_args}"
 podman_jdk_image = "docker.io/library/openjdk:17.0.2-slim"
 temurin_image = "docker.io/library/eclipse-temurin:22-jre-jammy"
@@ -93,7 +93,7 @@ SERVERS = {
         "public": {"game"},
         "extra": {
             "memory": "1G",
-            "velocity_version": "3.3.0-SNAPSHOT-390"
+            "velocity_version": "3.4.0-SNAPSHOT-535"
         },
         "image": temurin_image,
         "run_command": velocity_command,
@@ -132,7 +132,7 @@ SERVICES = {
         },
         "public": {},
         "extra": {},
-        "image": "docker.io/stackdoubleflow/mchprs:plot-scale-5",
+        "image": "docker.io/stackdoubleflow/mchprs:latest",
         "mounts": [
             ("/home/mcadmin/private/mchprs", "/data"),
             ("/home/mcadmin/actual_schematics", "/data/schems"),
@@ -158,4 +158,5 @@ NUDGEORE_LINKS = (
     get_discourse_url("c/moderation/petitions/20.json"),
     get_discourse_url("c/moderation/appeals/31.json"),
     get_discourse_url("c/moderation/suggestions/19.json"),
+    get_discourse_url("c/moderation/incidents/21.json")
 )

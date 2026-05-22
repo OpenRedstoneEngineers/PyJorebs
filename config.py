@@ -89,6 +89,7 @@ SERVERS = {
     "boat": paper_server(index=5, memory="8G"),
     "competition": paper_server(index=6, memory="8G"),
     "seasonal": paper_server(index=7, memory="4G"),
+    "minigame": paper_server(index=8, memory="8G"),
     "velocity": {
         "ports": {
             "game": 25565

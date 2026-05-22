@@ -9,6 +9,7 @@ load_dotenv(Path(__file__).parent / ".env")
 
 RCON_PASS = getenv("RCON_PASS")
 MYSQL_PASS = getenv("MYSQL_PASS")
+KOPIA_PASS = getenv("KOPIA_PASS")
 DISCOURSE_TOKEN = getenv("DISCOURSE_TOKEN")
 NUDGEORE_WEBHOOK = getenv("NUDGEORE_WEBHOOK")
 
@@ -43,11 +44,11 @@ def title(title_, subtitle):
 
 
 restoret_schedule = {
-    300: title("Server restart", "5 minutes"),
-    60: title("Server restart", "1 minute"),
-    20: title("Server restart", "20 seconds"),
-    5: title("Server restarting...", ""),
-    0: ["stop"],
+    timedelta(seconds=0): title("Server restart", "5 minutes"),
+    timedelta(minutes=4): title("Server restart", "1 minute"),
+    timedelta(minutes=4, seconds=40): title("Server restart", "20 seconds"),
+    timedelta(minutes=5): title("Server restarting...", ""),
+    timedelta(minutes=5, seconds=1): ["stop"],
 }
 
 

@@ -34,6 +34,7 @@ async def sequence(server, port):
     await run_command(server, ["kopia", "repository", "connect", "filesystem", "--path",
                          str(DESTINATION / "kopia" / server), f"--password={KOPIA_PASS}"])
     await run_command(server, ["kopia", "snapshot", "create", str(SERVERS_LOCATION / server)])
+    await run_command(server, ["kopia", "repository", "disconnect"])
     _LOGGER.info(f"({server}) Starting")
     await run_command(server, ["/usr/bin/systemctl", "start", "--user", f"ore@{server}"])
 
@@ -53,7 +54,8 @@ async def main():
         _LOGGER.addHandler(console_handler)
 
     info = [(server, SERVERS[server]['ports']['rcon']) for server in args.servers]
-    await asyncio.gather(*[sequence(server, port) for server, port in info])
+    for server, port in info:
+        await sequence(server, port)
 
 
 if __name__ == "__main__":

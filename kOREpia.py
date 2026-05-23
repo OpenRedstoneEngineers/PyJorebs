@@ -54,7 +54,7 @@ async def main():
         _LOGGER.addHandler(console_handler)
 
     info = [(server, SERVERS[server]['ports']['rcon']) for server in args.servers]
-    for server, port in info:
+    for server, port in sorted(info, key=lambda x: x[1], reverse=True):
         await sequence(server, port)
 
 

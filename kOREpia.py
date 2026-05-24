@@ -32,7 +32,7 @@ async def sequence(server, port):
     await run_command(server, ["/usr/bin/systemctl", "stop", "--user", f"ore@{server}"])
     _LOGGER.info(f"({server}) Backing up")
     await run_command(server, ["kopia", "repository", "connect", "filesystem", "--path",
-                         str(DESTINATION / "kopia" / server), f"--password={KOPIA_PASS}"])
+                         str(DESTINATION / "kopia"), f"--password={KOPIA_PASS}"])
     await run_command(server, ["kopia", "snapshot", "create", str(SERVERS_LOCATION / server)])
     await run_command(server, ["kopia", "repository", "disconnect"])
     _LOGGER.info(f"({server}) Starting")

@@ -66,7 +66,7 @@ async def main():
         console_handler.setFormatter(logging.Formatter('[%(asctime)s] %(name)s - %(levelname)s: %(message)s'))
         _LOGGER.addHandler(console_handler)
 
-    info = [(server, SERVERS[server]['ports']['rcon']) for server in args.servers]
+    info = [(server, SERVERS[server]['ports'].get('rcon', 0)) for server in args.servers]
     for server, port in sorted(info, key=lambda x: x[1], reverse=True):
         await sequence(server, port)
 

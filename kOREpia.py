@@ -24,20 +24,33 @@ async def run_command(server, command: list, delay: int = 1):
     await asyncio.sleep(delay)
 
 
-async def sequence(server, port):
-    _LOGGER.info(f"({server}) Beginning shutdown sequence")
-    await shutdown(server, port, _LOGGER)
-    await asyncio.sleep(1)
-    _LOGGER.info(f"({server}) Stopping")
-    await run_command(server, ["/usr/bin/systemctl", "stop", "--user", f"ore@{server}"])
-    _LOGGER.info(f"({server}) Backing up")
+async def kopia(server):
     await run_command(server, ["kopia", "repository", "connect", "filesystem", "--path",
-                         str(DESTINATION / "kopia"), f"--password={KOPIA_PASS}"])
+                               str(DESTINATION / "kopia"), f"--password={KOPIA_PASS}"])
     await run_command(server, ["kopia", "snapshot", "create", str(SERVERS_LOCATION / server)])
     await run_command(server, ["kopia", "repository", "disconnect"])
-    _LOGGER.info(f"({server}) Starting")
-    await run_command(server, ["/usr/bin/systemctl", "start", "--user", f"ore@{server}"])
 
+
+async def sequence(server, port):
+    service_control = True
+    if server != "velocity":
+        _LOGGER.info(f"({server}) Beginning shutdown sequence")
+        try:
+            await shutdown(server, port, _LOGGER)
+        except ConnectionRefusedError:
+            service_control = False
+            _LOGGER.warning(f"({server}) Unable to perform shutdown sequence")
+    else:
+        _LOGGER.info(f"({server}) Skipping shutdown sequence")
+    await asyncio.sleep(1)
+    if service_control:
+        await run_command(server, ["/usr/bin/systemctl", "stop", "--user", f"ore@{server}"])
+    try:
+        _LOGGER.info(f"({server}) Backing up")
+        await kopia(server)
+    finally:
+        if service_control:
+            await run_command(server, ["/usr/bin/systemctl", "start", "--user", f"ore@{server}"])
 
 async def main():
     parser = argparse.ArgumentParser(_NAME)

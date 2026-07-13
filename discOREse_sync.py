@@ -31,7 +31,8 @@ def fetch_discourse_groups():
 
 def fetch_discourse_users():
     form_data = {
-        "limit": "ALL"
+        "params": "null",
+        "explain": "false"
     }
     resp = requests.post(f"{discourse_url}/admin/plugins/explorer/queries/2/run", headers=_DISCOURSE_HEADERS,
                          data=form_data)

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 import argparse
+import json
 import logging
 import sys
 import time
+from itertools import count
 
 import mysql.connector
 import requests
@@ -20,35 +22,45 @@ _DISCOURSE_HEADERS = {
 
 
 def fetch_discourse_groups():
-    form_data = {
-        "limit": "ALL"
-    }
-    resp = requests.post(f"{discourse_url}/admin/plugins/explorer/queries/6/run", headers=_DISCOURSE_HEADERS,
-                         data=form_data)
+    resp = requests.post(f"{discourse_url}/admin/plugins/explorer/queries/6/run", headers=_DISCOURSE_HEADERS)
     data = resp.json()['rows']
     return {row[1]: row[0] for row in data}
 
 
 def fetch_discourse_users():
-    form_data = {
-        "params": "null",
-        "explain": "false"
-    }
-    resp = requests.post(f"{discourse_url}/admin/plugins/explorer/queries/2/run", headers=_DISCOURSE_HEADERS,
-                         data=form_data)
-    data = resp.json()['rows']
-    return [
-        {
-            "username": row[0],
-            "discourse_id": int(row[1]),
-            "discord_id": int(row[2]),
-            "mojang_name": None if row[3] == '' else row[3],
-            "mojang_uuid": None if row[4] == '' else row[4],
-            "groups": row[5],
-            "group_ids": row[6]
+    def _query(page: int):
+        params = {
+            "page_size": 1000,
+            "page_number": str(page)
         }
-        for row in data
-    ]
+        form_data = {
+            "params": json.dumps(params)
+        }
+        resp = requests.post(f"{discourse_url}/admin/plugins/explorer/queries/2/run", headers=_DISCOURSE_HEADERS,
+                             data=form_data)
+        return resp.json()['rows']
+
+    def _parse(rec):
+        # TODO Since the response returns the meta of the columns, this should just use that...
+        # *but eeehh*
+        return {
+            "username": rec[0],
+            "discourse_id": int(rec[1]),
+            "discord_id": int(rec[2]),
+            "mojang_name": None if rec[3] == '' else rec[3],
+            "mojang_uuid": None if rec[4] == '' else rec[4],
+            "groups": rec[5],
+            "group_ids": rec[6]
+        }
+
+    records = []
+    for page in count():
+        results = _query(page)
+        if not results:
+            break
+        _LOGGER.debug(f"Fetched {len(results)} records")
+        records.extend(results)
+    return [_parse(row) for row in records]
 
 
 def fetch_lp_users():
